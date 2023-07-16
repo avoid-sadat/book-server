@@ -49,21 +49,30 @@ const run = async () => {
 
     app.delete('/product/:id', async (req, res) => {
       const id = req.params.id;
-
-      const result = await productCollection.deleteOne({ _id: ObjectId(id) });
+      const objectId = new ObjectId(id);
+      const result = await productCollection.deleteOne({ _id: objectId });
       console.log(result);
       res.send(result);
     });
+   
+    app.patch('/product/:id', async (req, res) => {
+      const id = req.params.id;
+      const objectId = new ObjectId(id);
+      const result = await productCollection.updateOne({ _id: objectId }, { $set: req.body });
+      console.log(result);
+      res.send(result);
+    });
+    
 
     app.post('/comment/:id', async (req, res) => {
       const productId = req.params.id;
       const comment = req.body.comment;
-
+      const objectId = new ObjectId(productId);
       console.log(productId);
       console.log(comment);
 
       const result = await productCollection.updateOne(
-        { _id: ObjectId(productId) },
+        { _id: objectId },
         { $push: { comments: comment } }
       );
 
@@ -81,9 +90,9 @@ const run = async () => {
 
     app.get('/comment/:id', async (req, res) => {
       const productId = req.params.id;
-
+      const objectId =new ObjectId(productId)
       const result = await productCollection.findOne(
-        { _id: ObjectId(productId) },
+        { _id: objectId },
         { projection: { _id: 0, comments: 1 } }
       );
 
