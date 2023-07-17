@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 4000;
 
 const cors = require('cors');
 
@@ -28,6 +28,46 @@ const run = async () => {
 
       res.send({ status: true, data: product });
     });
+
+
+    //search book
+    // app.get('/product', async (req, res) => {
+    //   const { genre } = req.query; // Assuming the genre is passed as a query parameter
+    //   //const query = { genre: genre }; // Define the search criteria
+    //   const query = { genre: { $regex: `^${genre}$`, $options: 'i' } };
+    
+    //   try {
+    //     const cursor = productCollection.find(query); // Find documents matching the search criteria
+    //     const products = await cursor.toArray(); // Convert the cursor to an array
+    
+    //     res.send({ status: true, data: products });
+    //   } catch (error) {
+    //     console.error(error);
+    //     res.status(500).send({ status: false, message: 'An error occurred' });
+    //   }
+    // });
+    app.get('/product', async (req, res) => {
+      const { genre, published_date } = req.query; // Assuming genre and publishedDate are passed as query parameters
+      const query = {
+        genre: { $regex: `^${genre}$`, $options: 'i' },
+        published_date: published_date
+      }; // Define the case-sensitive search criteria including published date
+    
+      try {
+        const cursor = productCollection.find(query); // Find documents matching the search criteria
+        const products = await cursor.toArray(); // Convert the cursor to an array
+    
+        res.send({ status: true, data: products });
+      } catch (error) {
+        console.error(error);
+        res.status(500).send({ status: false, message: 'An error occurred' });
+      }
+    });
+    
+    
+    
+    
+    
 
 
     app.post('/product', async (req, res) => {
