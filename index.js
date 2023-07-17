@@ -30,29 +30,14 @@ const run = async () => {
     });
 
 
-    //search book
-    // app.get('/product', async (req, res) => {
-    //   const { genre } = req.query; // Assuming the genre is passed as a query parameter
-    //   //const query = { genre: genre }; // Define the search criteria
-    //   const query = { genre: { $regex: `^${genre}$`, $options: 'i' } };
-    
-    //   try {
-    //     const cursor = productCollection.find(query); // Find documents matching the search criteria
-    //     const products = await cursor.toArray(); // Convert the cursor to an array
-    
-    //     res.send({ status: true, data: products });
-    //   } catch (error) {
-    //     console.error(error);
-    //     res.status(500).send({ status: false, message: 'An error occurred' });
-    //   }
-    // });
     app.get('/product', async (req, res) => {
-      const { genre, published_date,title } = req.query; // Assuming genre and publishedDate are passed as query parameters
+      const { genre, published_date,title,author } = req.query; // Assuming genre and publishedDate are passed as query parameters
       const query = {
         $or: [
           { genre: { $regex: `^${genre}$`, $options: 'i' } },
-          { published_date: published_date },
-          { title: title }
+          { published_date: { $regex: `^${published_date}$`, $options: 'i' }},
+          { title: { $regex: `^${title}$`, $options: 'i' } },
+          { author: { $regex: `^${author}$`, $options: 'i' } }
         ]
       };
        // Define the case-sensitive search criteria including published date
