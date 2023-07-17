@@ -1,0 +1,21 @@
+app.get('/product', async (req, res) => {
+      const { genre, published_date } = req.query;
+    
+      try {
+        let query = {};
+    
+        if (genre) {
+          query.genre = { $regex: `^${genre}$`, $options: 'i' };
+        }
+    
+        if (published_date) {
+          query.published_date = published_date;
+        }
+    
+        const products = await productCollection.find(query).toArray();
+        res.send({ status: true, data: products });
+      } catch (error) {
+        console.error(error);
+        res.status(500).send({ status: false, message: 'An error occurred' });
+      }
+    });

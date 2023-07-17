@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 5000;
 
 const cors = require('cors');
 
@@ -47,11 +47,15 @@ const run = async () => {
     //   }
     // });
     app.get('/product', async (req, res) => {
-      const { genre, published_date } = req.query; // Assuming genre and publishedDate are passed as query parameters
+      const { genre, published_date,title } = req.query; // Assuming genre and publishedDate are passed as query parameters
       const query = {
-        genre: { $regex: `^${genre}$`, $options: 'i' },
-        published_date: published_date
-      }; // Define the case-sensitive search criteria including published date
+        $or: [
+          { genre: { $regex: `^${genre}$`, $options: 'i' } },
+          { published_date: published_date },
+          { title: title }
+        ]
+      };
+       // Define the case-sensitive search criteria including published date
     
       try {
         const cursor = productCollection.find(query); // Find documents matching the search criteria
